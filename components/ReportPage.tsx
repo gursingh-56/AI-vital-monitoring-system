@@ -187,9 +187,9 @@ const HubertEcgAnalysisRenderer: React.FC<{ analysis: any, className?: string }>
       {/* Diagnosis and Recommendation */}
       <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
         <h3 className="text-xl font-bold text-blue-300 mb-3">Diagnosis</h3>
-        <p className="text-gray-300 leading-relaxed">{analysis.mock_diagnosis.replace(' (Mock)', '')}</p>
+        <p className="text-gray-300 leading-relaxed">{analysis.mock_diagnosis ? analysis.mock_diagnosis.replace(' (Mock)', '') : 'N/A'}</p>
         <h3 className="text-xl font-bold text-blue-300 mt-4 mb-3">Recommendation</h3>
-        <p className="text-gray-300 leading-relaxed">{analysis.mock_recommendation}</p>
+        <p className="text-gray-300 leading-relaxed">{analysis.mock_recommendation || 'N/A'}</p>
       </div>
 
       {/* Clinical Parameters */}

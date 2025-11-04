@@ -463,7 +463,7 @@ const MonitoringPage: React.FC = () => {
 
 
   const handleStart = () => {
-    setAnalysisReport('');
+    setAnalysisReport(null);
     setEcgImages([]);
     setVitals({ heartRate: 0, bloodPressure: { systolic: 0, diastolic: 0 }, bloodSugar: 0, spo2: 0, temperature: 0 });
     const initialEcg = Array(ECG_DATA_LENGTH).fill({ name: '0', uv: 50 });
