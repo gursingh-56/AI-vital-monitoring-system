@@ -52,6 +52,16 @@ projecsoviet/
 │   ├── api.py
 │   ├── code/
 │   └── ...
+├── mesh-messenger/
+    ├── main.go
+    ├── node/
+    │   ├── node.go
+    │   └── peer.go
+    ├── message/
+    │   └── message.go
+    └── network/
+    ├── discovery.go
+   └── transport.go
 ├── services/
 │   ├── firebase.ts
 │   ├── geminiService.ts
@@ -156,13 +166,30 @@ This project leverages two powerful AI models for its analysis capabilities:
     *   Suggests a potential diagnosis based on the vital signs.
     *   Offers actionable recommendations for improving health.
 
-### HuBERT-ECG
+### ECG
 
 *   **Purpose**: A specialized, pre-trained model for analyzing Electrocardiogram (ECG) data.
 *   **Functionality**:
     *   Processes raw ECG signals to identify clinical parameters.
     *   Provides a diagnosis based on the ECG waveform (e.g., "Normal Sinus Rhythm").
     *   Offers recommendations based on the ECG analysis.
+
+### Mesh Messenger
+
+  A conceptual decentralized, peer-to-peer mesh messaging system, inspired by the principles of decentralization
+   and resilience. This project explores building a messaging system that operates without central servers,
+  aiming for censorship-resistance and high availability.
+
+  Key Concepts:
+   * Decentralized: Operates without a central authority.
+   * Peer-to-Peer: Direct communication between nodes.
+   * Mesh Networking: Messages are relayed across a network of interconnected nodes.
+   * Resilience: Designed to maintain functionality even with node failures.
+
+  Technology Used: Go
+
+  This project serves as a demonstration of interest in decentralized systems and Go programming, providing a
+  foundational structure for a mesh messaging network.
 
 ## 📊 Diagrams
 
