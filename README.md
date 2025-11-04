@@ -126,18 +126,18 @@ projecsoviet/
     npm start
     ```
 
-### HuBERT-ECG Model Setup
+### ECG Model Setup
 
 1.  **Navigate to the `HuBERT-ECG` directory**:
     ```bash
-    cd projecsoviet/HuBERT-ECG
+    cd projecsoviet/HECG
     ```
 2.  **Create a Python virtual environment**:
     ```bash
     python -m venv hubert_ecg_env
     ```
 3.  **Activate the virtual environment**:
-    *   **Windows**: `hubert_ecg_env\Scripts\activate`
+    *   **Windows**: `ecg_env\Scripts\activate`
     *   **macOS/Linux**: `source hubert_ecg_env/bin/activate`
 4.  **Install the required Python packages**:
     ```bash
@@ -172,6 +172,8 @@ This project leverages two powerful AI models for its analysis capabilities:
 ## 📊 Diagrams
 
 ### System Architecture
+
+![WhatsApp Image 2025-11-04 at 09 52 59_101a60c3](https://github.com/user-attachments/assets/7f4737e5-ee23-479d-91ea-1cb646ae0f69)
 
 ![System Architecture Diagram](placeholder_for_system_architecture_diagram.png)
 
