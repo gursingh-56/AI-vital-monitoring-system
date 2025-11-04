@@ -23,7 +23,6 @@ This project provides a comprehensive solution for monitoring vital signs, analy
 *   **Authentication**: Firebase Authentication
 *   **Database**: Firestore
 *   **AI Models**:
-    *   Google Gemini
     *   HuBERT-ECG
 *   **Email**: Resend API
 *   **Deployment**: (e.g., Vercel, Netlify, Heroku)
