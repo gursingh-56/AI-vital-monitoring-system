@@ -10,39 +10,42 @@ import react from '@vitejs/plugin-react';
  * knows nothing about that folder, so without this plugin `npm run dev` would
  * 404 on /api/gemini and the AI analysis would fail locally.
  *
- * This loads the same handler Vercel runs and bridges Node's req/res to the Web
- * Request/Response objects it expects. Dev only — `apply: 'serve'` keeps it out
- * of the production build entirely.
+ * The handler uses the same Node (req, res) signature Vercel's runtime invokes,
+ * so this just loads and calls it. Dev only — `apply: 'serve'` keeps it out of
+ * the production build entirely.
  */
 const devApiFunctions = () => ({
   name: 'dev-api-functions',
   apply: 'serve' as const,
   configureServer(server: any) {
     server.middlewares.use('/api/gemini', async (req: any, res: any) => {
-      const send = (status: number, body: unknown) => {
-        res.statusCode = status;
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(body));
-      };
       try {
-        const chunks: Buffer[] = [];
-        for await (const chunk of req) chunks.push(chunk as Buffer);
-
-        const request = new Request('http://localhost/api/gemini', {
-          method: req.method,
-          headers: req.headers,
-          body: req.method === 'GET' || req.method === 'HEAD' ? undefined : Buffer.concat(chunks),
-        });
-
+        // Vercel pre-parses the JSON body onto req.body before invoking the
+        // handler; do the same here. Leaving the handler to drain the stream can
+        // hang if Vite has already consumed it.
+        const hasBody = req.method !== 'GET' && req.method !== 'HEAD';
+        if (hasBody && req.body === undefined) {
+          const chunks: Buffer[] = [];
+          for await (const chunk of req) chunks.push(chunk as Buffer);
+          const raw = Buffer.concat(chunks).toString('utf8');
+          try {
+            req.body = raw === '' ? {} : JSON.parse(raw);
+          } catch {
+            res.statusCode = 400;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ error: 'Invalid JSON body.' }));
+            return;
+          }
+        }
+        // The handler uses the same Node (req, res) signature Vercel invokes in
+        // production, so it can be called directly with no further adaptation.
         const mod = await server.ssrLoadModule('/api/gemini.ts');
-        const response: Response = await mod.default(request);
-
-        res.statusCode = response.status;
-        response.headers.forEach((value, key) => res.setHeader(key, value));
-        res.end(Buffer.from(await response.arrayBuffer()));
+        await mod.default(req, res);
       } catch (error) {
         server.config.logger.error(`[dev-api] /api/gemini failed: ${error}`);
-        send(500, { error: 'Local API function failed. See the terminal for details.' });
+        res.statusCode = 500;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Local API function failed. See the terminal for details.' }));
       }
     });
   },

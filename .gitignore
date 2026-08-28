@@ -106,3 +106,5 @@ $RECYCLE.BIN/
 # === Deployment note ===
 # The whole project lives in this repo, but only the frontend is deployed.
 # Vercel is told to skip the server-side folders via .vercelignore, not here.
+.vercel
+.env*
