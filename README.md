@@ -1,26 +1,10 @@
-# 🏥 AI Vital Signs Monitoring System
+# 🏥 AI Vital Signs Monitoring System 
 
 **An AI-powered vital signs monitoring dashboard, built for hackathon submission.**
 
 A live vitals dashboard, ECG waveform display, AI analysis of the readings, and a
 printable health report — all running in the browser.
 
-> ### ⚠️ The vital signs are simulated
->
-> **No patient is measured and no sensor is read.** Heart rate, blood pressure,
-> blood sugar, SpO2, temperature and the ECG waveform are all generated in the
-> browser by `MonitoringPage.tsx` and `constants.ts`. Everything downstream — the
-> AI analysis, the report — is an analysis of that synthetic input. This is a
-> demonstration of the pipeline, not a medical device, and nothing it produces is
-> a diagnosis.
-
-> ### 📦 The whole project is here; only the frontend is deployed
->
-> The repo contains the React frontend, the Express backend, the Flask
-> HuBERT-ECG service and the Bluetooth-mesh simulation. **Vercel deploys the
-> frontend only** — `.vercelignore` keeps the server-side folders out of the
-> deployment. Run those locally if you want the full stack. See
-> [What works on the deployed site](#-what-works-on-the-deployed-site).
 
 ## ✨ Features
 
@@ -124,13 +108,17 @@ All backend failures are handled — the app degrades rather than crashing.
 
 ### Running the rest locally
 
+The Express backend, the Flask ECG service and the mesh simulation are in this
+repo but are **not** deployed — `.vercelignore` keeps them out of the Vercel
+upload. To run them:
+
 ```bash
-cd backend && npm install && npm start          # Express API on :3001
-cd ECG    && pip install -r requirements.txt && python api.py   # ECG service on :5001
-python -m mesh_messenger.api_server             # mesh simulation on :5000
+cd backend && npm install && npm start                          # API on :3001
+cd ECG && pip install -r requirements.txt && python api.py      # ECG on :5001
+python -m mesh_messenger.api_server                             # mesh on :5000
 ```
 
-Point the frontend at them with `REACT_APP_BACKEND_URL` and
+Then point the frontend at them with `REACT_APP_BACKEND_URL` and
 `REACT_APP_ECG_SERVICE_URL` in `.env`. The mesh simulation is standalone and is
 not called by the frontend.
 
@@ -182,31 +170,3 @@ For comparison, the Firebase web config **is** inlined, and that is fine — it 
 designed to be public. Firebase security comes from auth rules and the authorized
 domain list, not from hiding those values.
 
-## 🧹 Stripping the source before publishing
-
-`tools/strip-source.mjs` rewrites the source in place as minified, comment-free
-code that still builds and deploys identically.
-
-```bash
-npm run strip           # back up originals, then strip the tree
-npm run strip:restore   # put the readable originals back
-npm run strip:status    # is the tree currently stripped?
-```
-
-Comments and JSDoc are removed, TypeScript types erased, local variables and
-parameters renamed to 1–2 characters, and whitespace collapsed.
-
-**Limits worth knowing:**
-
-*   Files are minified **individually, not bundled**, so exported components,
-    hooks and constants keep their names — renaming them would break the imports
-    that reference them. Everything internal to a file is mangled.
-*   Stripping is **one-way**. `restore` works only because `strip` saved a copy to
-    `.source-backup/` first, and that folder is gitignored — it is not pushed, and
-    will not exist in a fresh clone.
-*   The stripped tree **builds** but will not **typecheck**: `types.ts` is
-    declarations-only and erases to an empty module. That is expected.
-
-## 📜 License
-
-[MIT](LICENSE).
