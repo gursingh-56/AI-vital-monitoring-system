@@ -44,16 +44,20 @@ Firebase Auth · Google Gemini · jsPDF
 ## 📂 Project Structure
 
 ```
+├── api/
+│   └── gemini.ts               # Vercel Function: server-side Gemini call
 ├── components/            # UI components
 │   ├── DeviceStatusBadge.tsx   # connected / connecting / disconnected
 │   ├── EcgChart.tsx            # Recharts ECG trace
 │   ├── ReportPage.tsx          # analysis report, print + PDF
 │   └── ...
-├── contexts/AuthContext.tsx    # auth state
+├── contexts/
+│   ├── AuthContext.tsx         # auth state
+│   └── DeviceContext.tsx       # device connection, shared across routes
 ├── services/
 │   ├── apiConfig.ts            # service URLs (single source of truth)
 │   ├── firebase.ts             # Firebase auth wrapper
-│   ├── geminiService.ts        # Gemini vital-sign analysis
+│   ├── geminiService.ts        # calls /api/gemini (holds no key)
 │   └── ttsService.ts           # Hindi text-to-speech
 ├── tools/                 # source-stripping utility
 ├── App.tsx                # routes
@@ -66,7 +70,15 @@ Firebase Auth · Google Gemini · jsPDF
 
 ```bash
 npm install
-npm run dev          # http://localhost:3000
+npm run dev          # http://localhost:3000 — frontend only
+```
+
+`npm run dev` does not run the `/api` function, so AI analysis will report an
+error. To run the frontend and the function together:
+
+```bash
+npm i -g vercel
+vercel dev
 ```
 
 Create a `.env` in the project root:
@@ -78,6 +90,9 @@ REACT_APP_FIREBASE_PROJECT_ID=...
 REACT_APP_FIREBASE_STORAGE_BUCKET=...
 REACT_APP_FIREBASE_MESSAGING_SENDER_ID=...
 REACT_APP_FIREBASE_APP_ID=...
+
+# Server-side only. Read by api/gemini.ts at request time and never inlined
+# into the browser bundle. Required by `vercel dev` and by the deployment.
 GEMINI_API_KEY=...
 
 # Optional — only if you are running the companion services locally
@@ -95,13 +110,13 @@ REACT_APP_ECG_SERVICE_URL=http://127.0.0.1:5001
 |---|---|
 | Firebase sign-in / sign-up | ✅ works |
 | Connect device, live vitals, ECG trace | ✅ works (all simulated in-browser) |
-| Gemini analysis of the vitals | ✅ works (browser calls Google directly) |
+| Gemini analysis of the vitals | ✅ works (via the bundled `/api/gemini` function) |
 | Report page, print, PDF export | ✅ works |
 | Hindi voice announcements | ✅ works (browser speech synthesis) |
 | HuBERT-ECG analysis section | ❌ shows "ECG Analysis Failed" |
 | Emailing the report | ❌ fails — needs the Express backend |
 | Dashboard body-age calculation | ❌ "Save Failed" — needs the backend |
-| Backend status indicator | shows **Offline** on the report page |
+| Device status badge | ✅ shown on both the monitoring and report pages |
 
 All backend failures are handled — the app degrades rather than crashing.
 
@@ -117,23 +132,41 @@ vercel --prod
 rewrite — without it, refreshing on `/monitoring` or `/report` would 404, because
 the app uses `BrowserRouter`.
 
-Then, in **Project → Settings → Environment Variables**, add `GEMINI_API_KEY` and
-all six `REACT_APP_FIREBASE_*` values, and **redeploy**. Vite inlines these at
-*build* time, so adding them after a build has no effect.
+Then, in **Project → Settings → Environment Variables**, add:
+
+| Variable | Where it is used |
+|---|---|
+| `GEMINI_API_KEY` | server-side only, by `api/gemini.ts` |
+| `REACT_APP_FIREBASE_API_KEY` and the other five `REACT_APP_FIREBASE_*` | inlined into the client bundle at build time |
+
+**Redeploy after adding them.** The `REACT_APP_*` values are inlined at *build*
+time, so adding them to an existing deployment has no effect until you rebuild.
 
 Finally add your `*.vercel.app` domain in **Firebase Console → Authentication →
 Settings → Authorized domains**, or sign-in will be rejected.
 
-### ⚠️ Your Gemini key ships in the browser bundle
+### 🔑 Where the Gemini key lives
 
-`geminiService.ts` calls Google directly from the browser, so `GEMINI_API_KEY` is
-inlined into the JavaScript as a plain string. **Anyone who opens the deployed
-site can extract it and spend your quota.** Minifying the source does not hide it.
+**It never reaches the browser.** `api/gemini.ts` runs as a Vercel Function and
+reads `GEMINI_API_KEY` from the server environment at request time. The browser
+posts vital signs to `/api/gemini` and gets the analysis back; it never sees a key.
 
-Before deploying publicly, restrict the key in Google Cloud Console — limit it to
-the Generative Language API and to your deployment's HTTP referrer — or move the
-Gemini call behind a server you control. The Firebase web config is different: it
-is designed to be public and is safe to expose.
+Two details that keep it that way:
+
+*   `GEMINI_API_KEY` is **not** listed in the `define` block of `vite.config.ts`.
+    Anything listed there is substituted into the bundle as a readable string.
+    Note the `REACT_APP_` prefix is only a naming convention here — what actually
+    exposes a value is being named in `define`, so never add the key there.
+*   The prompt is built on the server. If the endpoint accepted a prompt from the
+    client, anyone could spend your Gemini quota on arbitrary text; it accepts only
+    the vital-sign numbers, and rejects anything else.
+
+Verified: building with `GEMINI_API_KEY` set produces a bundle that does not
+contain the key, and calls `/api/gemini` instead.
+
+For comparison, the Firebase web config **is** inlined, and that is fine — it is
+designed to be public. Firebase security comes from auth rules and the authorized
+domain list, not from hiding those values.
 
 ## 🧹 Stripping the source before publishing
 

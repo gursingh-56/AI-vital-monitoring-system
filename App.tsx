@@ -1,23 +1,25 @@
-import B from"react";import{BrowserRouter as S,Routes as _,Route as R}from"react-router-dom";import{AuthProvider as C}from"./contexts/AuthContext";import P from"./components/ProtectedRoute";import D from"./components/AuthPage";import F from"./components/SignUpPage";import E from"./components/ErrorBoundary";import L from"./MonitoringPage";import M from"./components/ReportPage";import T from"./components/DashboardPage";import U from"./components/SharedLayout";import G from"./components/AuthRedirector";const H=()=>(B.useEffect(()=>{const v=console.error;return console.error=(...A)=>{A[0]?.includes?.("listener indicated an asynchronous response")||v.apply(console,A)},()=>{console.error=v}},[]),<C>
+import D from"react";import{BrowserRouter as S,Routes as _,Route as R}from"react-router-dom";import{AuthProvider as C}from"./contexts/AuthContext";import{DeviceProvider as F}from"./contexts/DeviceContext";import P from"./components/ProtectedRoute";import L from"./components/AuthPage";import M from"./components/SignUpPage";import E from"./components/ErrorBoundary";import T from"./MonitoringPage";import U from"./components/ReportPage";import G from"./components/DashboardPage";import H from"./components/SharedLayout";import I from"./components/AuthRedirector";const J=()=>(D.useEffect(()=>{const A=console.error;return console.error=(...B)=>{B[0]?.includes?.("listener indicated an asynchronous response")||A.apply(console,B)},()=>{console.error=A}},[]),<C>
+      <F>
       <S future={{v7_startTransition:!0,v7_relativeSplatPath:!0}}>
-        <G/>
+        <I/>
         <_>
           {}
           <R path="/"element={<E>
-              <D/>
+              <L/>
             </E>}/>
 
           {}
           <R path="/signup"element={<E>
-              <F/>
+              <M/>
             </E>}/>
 
           {}
-          <R element={<U/>}>
-            <R path="/monitoring"element={<P><L/></P>}/>
-            <R path="/dashboard"element={<P><T/></P>}/>
-            <R path="/report"element={<P><E><M/></E></P>}/>
+          <R element={<H/>}>
+            <R path="/monitoring"element={<P><T/></P>}/>
+            <R path="/dashboard"element={<P><G/></P>}/>
+            <R path="/report"element={<P><E><U/></E></P>}/>
           </R>
         </_>
       </S>
-    </C>);export default H;
+      </F>
+    </C>);export default J;

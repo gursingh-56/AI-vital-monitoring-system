@@ -1,0 +1,3 @@
+import{createContext as a,useCallback as s,useContext as v,useEffect as C,useRef as l,useState as f}from"react";import{DEVICE_CONNECT_DURATION_MS as D}from"../constants";const o=a(void 0);export const DeviceProvider=({children:t})=>{const[i,n]=f("disconnected"),e=l(null),c=()=>{e.current&&(clearTimeout(e.current),e.current=null)},u=s(()=>{n(r=>r!=="disconnected"?r:(c(),e.current=window.setTimeout(()=>{e.current=null,n("connected")},D),"connecting"))},[]),d=s(()=>{c(),n("disconnected")},[]);return C(()=>c,[]),<o.Provider value={{status:i,isConnected:i==="connected",connect:u,disconnect:d}}>
+      {t}
+    </o.Provider>},useDevice=()=>{const t=v(o);if(t===void 0)throw new Error("useDevice must be used within a DeviceProvider");return t};export default o;

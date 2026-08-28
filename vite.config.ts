@@ -16,9 +16,11 @@ export default defineConfig(({ mode }) => {
       // NOTE: every `process.env.X` read anywhere in the frontend must be listed
       // here. Vite substitutes only the exact expressions named below; any other
       // `process.env.X` compiles to `undefined` in the bundle with no warning.
+      //
+      // GEMINI_API_KEY is deliberately absent: anything listed here is inlined
+      // into the client bundle as a readable string. The key is used only by the
+      // api/gemini.ts Vercel Function, which reads it from the server environment.
       define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.REACT_APP_BACKEND_URL': JSON.stringify(env.REACT_APP_BACKEND_URL),
         'process.env.REACT_APP_ECG_SERVICE_URL': JSON.stringify(env.REACT_APP_ECG_SERVICE_URL),
         'process.env.REACT_APP_GOOGLE_TTS_API_KEY': JSON.stringify(env.REACT_APP_GOOGLE_TTS_API_KEY),

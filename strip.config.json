@@ -15,7 +15,8 @@
     "types.ts",
     "components/*.tsx",
     "contexts/*.tsx",
-    "services/*.ts"
+    "services/*.ts",
+    "api/*.ts"
   ],
   "exclude": [
     "**/node_modules/**",
