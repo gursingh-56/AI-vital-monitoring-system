@@ -1,0 +1,1 @@
+const calculateBodyAge=(o,s,t,n)=>{if(!o||!s||!t||!n||t<=0||n<=0)return null;const e=t/100,a=n/(e*e);let l;s.toLowerCase()==="male"?l=1.2*a+.23*o-16.2:l=1.2*a+.23*o-5.4;const c=o+(l-18)*.5,r=Math.max(0,c);return Math.round(r*10)/10};module.exports={calculateBodyAge};

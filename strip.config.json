@@ -1,11 +1,13 @@
 {
   "_comment": [
     "Files that tools/strip-source.mjs minifies in place before you publish.",
-    "This repo publishes the frontend only; the Express backend, Flask ECG service",
-    "and mesh simulation are not part of the deployed tree.",
-    "Excluded: tools/** (the strip tool must stay runnable) and the config files",
-    "(package.json, vite.config.ts, tsconfig.json, Tailwind/PostCSS) so the project",
-    "still builds and deploys like a normal repo."
+    "The whole project is in this repo; only the frontend is deployed (.vercelignore).",
+    "Excluded:",
+    "  tools/**      - the strip tool itself must stay runnable.",
+    "  ECG/code/**   - vendored upstream HuBERT-ECG research code (CC BY-NC 4.0).",
+    "                  Not ours to rewrite, and it must stay attributable.",
+    "  config files  - package.json, vite.config.ts, tsconfig.json and the Tailwind",
+    "                  and PostCSS configs stay readable so the project still builds."
   ],
   "include": [
     "App.tsx",
@@ -16,12 +18,18 @@
     "components/*.tsx",
     "contexts/*.tsx",
     "services/*.ts",
-    "api/*.ts"
+    "api/*.ts",
+    "backend/*.js",
+    "backend/utils/*.js",
+    "ECG/api.py",
+    "mesh_messenger/*.py"
   ],
   "exclude": [
     "**/node_modules/**",
     ".source-backup/**",
     "dist/**",
-    "tools/**"
+    "tools/**",
+    "ECG/code/**",
+    "ECG/venv/**"
   ]
 }

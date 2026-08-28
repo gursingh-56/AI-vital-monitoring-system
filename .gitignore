@@ -103,11 +103,6 @@ $RECYCLE.BIN/
 # Originals kept by tools/strip-source.mjs (never publish these)
 .source-backup/
 
-# === Frontend-only deployment ===
-# This repo publishes the Vite/React frontend only. The Express backend, the
-# Flask HuBERT-ECG service and the mesh simulation are not deployed with it, so
-# they are kept out of the published tree. They remain on the local
-# `readable-source` branch.
-backend/
-ECG/
-mesh_messenger/
+# === Deployment note ===
+# The whole project lives in this repo, but only the frontend is deployed.
+# Vercel is told to skip the server-side folders via .vercelignore, not here.

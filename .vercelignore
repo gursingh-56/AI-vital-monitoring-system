@@ -1,0 +1,24 @@
+# Files kept in the repository but NOT uploaded to Vercel.
+#
+# The whole project lives in git; only the frontend is deployed. Vercel would
+# ignore these anyway — it builds with `npm run build` from the root package.json
+# and only treats `api/` as serverless functions — but excluding them explicitly
+# keeps the deployment small and makes the intent obvious.
+#
+# Do NOT add `api/` here: that folder holds the Gemini function the frontend calls.
+
+# Express backend — run locally or host separately
+backend/
+
+# Flask HuBERT-ECG service and the vendored upstream research repo
+ECG/
+
+# Standalone Bluetooth-mesh simulation
+mesh_messenger/
+
+# Source-stripping utility, only used before publishing
+tools/
+strip.config.json
+
+# Local readable-source backup (also gitignored)
+.source-backup/

@@ -1,4 +1,4 @@
-# 🏥 AI Vital Signs Monitoring System — Frontend
+# 🏥 AI Vital Signs Monitoring System
 
 **An AI-powered vital signs monitoring dashboard, built for hackathon submission.**
 
@@ -14,12 +14,13 @@ printable health report — all running in the browser.
 > demonstration of the pipeline, not a medical device, and nothing it produces is
 > a diagnosis.
 
-> ### 📦 This repository is the frontend only
+> ### 📦 The whole project is here; only the frontend is deployed
 >
-> The Express backend, the Flask HuBERT-ECG service and the Bluetooth-mesh
-> simulation are **not** part of this repo. See
-> [What works without a backend](#-what-works-without-a-backend) for exactly which
-> features are live and which are inert.
+> The repo contains the React frontend, the Express backend, the Flask
+> HuBERT-ECG service and the Bluetooth-mesh simulation. **Vercel deploys the
+> frontend only** — `.vercelignore` keeps the server-side folders out of the
+> deployment. Run those locally if you want the full stack. See
+> [What works on the deployed site](#-what-works-on-the-deployed-site).
 
 ## ✨ Features
 
@@ -59,7 +60,11 @@ Firebase Auth · Google Gemini · jsPDF
 │   ├── firebase.ts             # Firebase auth wrapper
 │   ├── geminiService.ts        # calls /api/gemini (holds no key)
 │   └── ttsService.ts           # Hindi text-to-speech
+├── backend/               # Express API — not deployed, run locally
+├── ECG/                   # Flask HuBERT-ECG service + vendored research repo
+├── mesh_messenger/        # standalone Bluetooth-mesh simulation
 ├── tools/                 # source-stripping utility
+├── .vercelignore          # keeps the above out of the Vercel deployment
 ├── App.tsx                # routes
 ├── MonitoringPage.tsx     # simulation + session flow
 ├── constants.ts           # vital ranges, ECG waveforms, timers
@@ -101,21 +106,33 @@ REACT_APP_ECG_SERVICE_URL=http://127.0.0.1:5001
 > `define` block of `vite.config.ts`. Vite substitutes only the names listed
 > there; anything omitted silently compiles to `undefined`.
 
-## 🔌 What works without a backend
+## 🔌 What works on the deployed site
 
-| Feature | Frontend-only |
+| Feature | Deployed (frontend only) |
 |---|---|
 | Firebase sign-in / sign-up | ✅ works |
 | Connect device, live vitals, ECG trace | ✅ works (all simulated in-browser) |
 | Gemini analysis of the vitals | ✅ works (via the bundled `/api/gemini` function) |
 | Report page, print, PDF export | ✅ works |
 | Hindi voice announcements | ✅ works (browser speech synthesis) |
-| HuBERT-ECG analysis section | ❌ shows "ECG Analysis Failed" |
-| Emailing the report | ❌ fails — needs the Express backend |
-| Dashboard body-age calculation | ❌ "Save Failed" — needs the backend |
+| HuBERT-ECG analysis section | ❌ shows "ECG Analysis Failed" — run `ECG/api.py` locally |
+| Emailing the report | ❌ needs `backend/` running |
+| Dashboard body-age calculation | ❌ "Save Failed" — needs `backend/` running |
 | Device status badge | ✅ shown on both the monitoring and report pages |
 
 All backend failures are handled — the app degrades rather than crashing.
+
+### Running the rest locally
+
+```bash
+cd backend && npm install && npm start          # Express API on :3001
+cd ECG    && pip install -r requirements.txt && python api.py   # ECG service on :5001
+python -m mesh_messenger.api_server             # mesh simulation on :5000
+```
+
+Point the frontend at them with `REACT_APP_BACKEND_URL` and
+`REACT_APP_ECG_SERVICE_URL` in `.env`. The mesh simulation is standalone and is
+not called by the frontend.
 
 ## ▲ Deploying to Vercel
 
