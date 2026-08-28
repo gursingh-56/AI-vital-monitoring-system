@@ -1,0 +1,5 @@
+{
+  "name": "AI Vital Monitoring",
+  "description": "A web application that simulates monitoring of vital signs like heart rate, blood pressure, blood sugar, SpO2, temperature, and ECG. An AI assistant analyzes the readings to provide a detailed diagnosis and recommendations.",
+  "requestFramePermissions": []
+}

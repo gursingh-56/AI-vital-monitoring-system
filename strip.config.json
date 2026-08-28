@@ -1,0 +1,26 @@
+{
+  "_comment": [
+    "Files that tools/strip-source.mjs minifies in place before you publish.",
+    "This repo publishes the frontend only; the Express backend, Flask ECG service",
+    "and mesh simulation are not part of the deployed tree.",
+    "Excluded: tools/** (the strip tool must stay runnable) and the config files",
+    "(package.json, vite.config.ts, tsconfig.json, Tailwind/PostCSS) so the project",
+    "still builds and deploys like a normal repo."
+  ],
+  "include": [
+    "App.tsx",
+    "MonitoringPage.tsx",
+    "index.tsx",
+    "constants.ts",
+    "types.ts",
+    "components/*.tsx",
+    "contexts/*.tsx",
+    "services/*.ts"
+  ],
+  "exclude": [
+    "**/node_modules/**",
+    ".source-backup/**",
+    "dist/**",
+    "tools/**"
+  ]
+}
