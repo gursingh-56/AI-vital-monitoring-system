@@ -22,3 +22,10 @@ strip.config.json
 
 # Local readable-source backup (also gitignored)
 .source-backup/
+
+# Secrets. These must NEVER be uploaded — configure them as Environment
+# Variables in the Vercel project instead. Without this, `vercel` uploads .env
+# as a build file and Vite reads it at build time, which both leaks the file
+# into the deployment and hides the fact that the project env vars are unset.
+.env
+.env.*
