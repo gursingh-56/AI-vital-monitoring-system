@@ -70,16 +70,13 @@ Firebase Auth · Google Gemini · jsPDF
 
 ```bash
 npm install
-npm run dev          # http://localhost:3000 — frontend only
+npm run dev          # http://localhost:3000
 ```
 
-`npm run dev` does not run the `/api` function, so AI analysis will report an
-error. To run the frontend and the function together:
-
-```bash
-npm i -g vercel
-vercel dev
-```
+This serves the frontend **and** the `/api/gemini` function: `vite.config.ts`
+registers a dev-only middleware that runs the same handler Vercel runs in
+production, so local behaviour matches the deployment. Put `GEMINI_API_KEY` in
+`.env` and it is picked up automatically.
 
 Create a `.env` in the project root:
 
@@ -92,7 +89,7 @@ REACT_APP_FIREBASE_MESSAGING_SENDER_ID=...
 REACT_APP_FIREBASE_APP_ID=...
 
 # Server-side only. Read by api/gemini.ts at request time and never inlined
-# into the browser bundle. Required by `vercel dev` and by the deployment.
+# into the browser bundle.
 GEMINI_API_KEY=...
 
 # Optional — only if you are running the companion services locally
